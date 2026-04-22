@@ -1,8 +1,8 @@
+````markdown
+
 # Productivity Task API + JWT Frontend Client
 
-This is a full-stack productivity project built with a **Flask backend API** and a **React frontend client** using **JWT authentication**.
-
-Users can create accounts, log in securely, remain authenticated across refreshes, and manage personal tasks through protected API endpoints.
+FocusFlow is a full-stack productivity project built with a Flask backend API and a React frontend client using JWT authentication. Users can create accounts, log in securely, remain authenticated across refreshes, and manage personal tasks through protected API endpoints.
 
 This project demonstrates backend authentication, authorization, RESTful API design, frontend integration, and secure user-owned resource management.
 
@@ -10,217 +10,292 @@ This project demonstrates backend authentication, authorization, RESTful API des
 
 ## Project Structure
 
+The repository contains two main parts: a Flask backend and a React frontend.
+
+- `backend/` contains the Flask API, database models, tests, migrations, and seed files.
+- `client-with-jwt/` contains the React frontend used for JWT authentication and future task integration.
+- `README.md` is the main project guide.
+
+---
+
+## Features
+
+### Authentication
+
+Users can sign up, log in, and remain authenticated using JSON Web Tokens (JWT). Tokens are stored on the frontend and reused to maintain sessions after page refreshes.
+
+### Task Management
+
+Each authenticated user can manage their own tasks through secure CRUD operations.
+
+Users can:
+
+- Create tasks
+- View all personal tasks
+- View one task
+- Update task details
+- Delete tasks
+- Access paginated task lists
+
+### Security
+
+Passwords are securely hashed using bcrypt and never stored in plaintext. JWT tokens are required for protected routes. Users cannot access or modify another user’s data.
+
+---
+
+## Tech Stack
+
+### Backend
+
+- Python 3.8+
+- Flask
+- Flask-SQLAlchemy
+- Flask-Migrate
+- Flask-Bcrypt
+- Flask-JWT-Extended
+- Marshmallow
+- Faker
+- Pytest
+
+### Frontend
+
+- React
+- JavaScript
+- Fetch API
+- localStorage
+
+---
+
+## How the Application Works
+
+### Signup Flow
+
+A new user submits a username and password through the React frontend. The frontend sends a request to the Flask backend. The password is hashed with bcrypt, the user is saved to the database, and a JWT token is returned.
+
+### Login Flow
+
+An existing user submits valid credentials. The backend verifies the stored password hash and returns a new JWT token.
+
+### Persistent Sessions
+
+When the frontend reloads, it checks localStorage for a saved token and sends it to the `/me` endpoint. If valid, the user remains logged in.
+
+### Task Ownership
+
+Whenever a task request is made, the backend extracts the logged-in user's identity from the JWT token and returns only that user's tasks.
+
+---
+
+## Installation Guide
+
+### Clone the Repository
+
 ```bash
-productivity-task-api-with-jwt/
-├── backend/
-│   ├── app/
-│   ├── tests/
-│   ├── run.py
-│   ├── seed.py
-│   └── README.md
-│
-├── client-with-jwt/
-│   ├── src/
-│   └── package.json
-│
-└── README.md
-
-Features
-
-Authentication
-User signup
-User login
-JWT token generation
-Persistent login via localStorage
-Protected routes using Bearer tokens
-Secure password hashing with bcrypt
-Task Management
-
-Each user can manage only their own tasks.
-
-Create tasks
-View tasks
-View one task
-Update tasks
-Delete tasks
-Pagination support
-Security
-Passwords are never stored in plaintext
-JWT required for protected routes
-Users cannot access other users’ tasks
-Ownership enforced server-side
-
-Tech Stack
-
-Backend
-Python 3.8+
-Flask
-Flask-SQLAlchemy
-Flask-Migrate
-Flask-Bcrypt
-Flask-JWT-Extended
-Marshmallow
-Faker
-Pytest
-Frontend
-React
-JavaScript
-Fetch API
-localStorage
-
-How It Works
-
-Signup Flow
-User submits username and password in the React frontend
-Frontend sends a POST /signup request
-Flask creates the user
-Password is hashed with bcrypt
-JWT token is generated
-Token is saved in localStorage
-User becomes logged in
-Login Flow
-User submits credentials
-Frontend sends POST /login
-Flask verifies password hash
-JWT token is returned
-Frontend stores token
-Persistent Session
-
-When the page refreshes:
-
-Frontend reads token from localStorage
-Sends GET /me
-If token is valid, user remains logged in
-Task Flow
-
-Authenticated requests use:
-
-Authorization: Bearer <token>
-
-Backend extracts user identity from JWT and returns only that user’s tasks.
-
-Installation Guide
-1. Clone Repository
 git clone https://github.com/YOUR_USERNAME/focusflow.git
 cd focusflow
-Backend Setup
+````
+
+### Backend Setup
+
+```bash
 cd backend
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-Create .env
+```
 
-Inside /backend create:
+### Create Environment Variables
 
+Inside the `backend/` folder, create a `.env` file:
+
+```env
 SECRET_KEY=your-secret-key
 JWT_SECRET_KEY=your-jwt-secret-key
+```
 
-Generate secure values with:
+Generate secure keys with:
 
+```bash
 python -c "import secrets; print(secrets.token_hex(32))"
-Setup Database
+```
+
+---
+
+## Database Setup
+
+Run the following inside the backend folder:
+
+```bash
 export FLASK_APP=run.py
 flask db init
 flask db migrate -m "initial migration"
 flask db upgrade
 python seed.py
-Run Backend
+```
+
+This creates the database tables and inserts sample data.
+
+---
+
+## Running the Backend Server
+
+```bash
 flask run
+```
 
 or
 
+```bash
 python run.py
+```
 
-Runs on:
+The backend runs locally at:
 
-http://localhost:5555
-Frontend Setup
+`http://localhost:5555`
 
-Open a new terminal:
+---
 
+## Running the Frontend Client
+
+Open a new terminal and run:
+
+```bash
 cd client-with-jwt
 npm install
 npm start
+```
 
-Runs on:
+The frontend runs locally at:
 
-http://localhost:3000
-Connecting Frontend to Backend
+`http://localhost:3000`
 
-If needed, add this to frontend package.json:
+---
 
+## Connecting Frontend to Backend
+
+If needed, add this line to the frontend `package.json` file:
+
+```json
 "proxy": "http://localhost:5555"
+```
 
-This allows React requests to reach the Flask API.
+This allows React requests to automatically reach the Flask backend.
 
-API Endpoints
-Auth Routes
-Method	Endpoint	Description
-POST	/signup	Register user
-POST	/login	Login user
-GET	/me	Current user
-Task Routes
-Method	Endpoint
-GET	/tasks?page=1
-GET	/tasks/<id>
-POST	/tasks
-PATCH	/tasks/<id>
-DELETE	/tasks/<id>
-Example Requests
-Signup
+---
+
+## API Endpoints
+
+### Authentication Routes
+
+| Method | Endpoint | Description                       |
+| ------ | -------- | --------------------------------- |
+| POST   | /signup  | Register a new user               |
+| POST   | /login   | Login user and receive JWT        |
+| GET    | /me      | Return current authenticated user |
+
+### Task Routes
+
+| Method | Endpoint      | Description         |
+| ------ | ------------- | ------------------- |
+| GET    | /tasks?page=1 | Get paginated tasks |
+| GET    | /tasks/<id>   | Get one task        |
+| POST   | /tasks        | Create task         |
+| PATCH  | /tasks/<id>   | Update task         |
+| DELETE | /tasks/<id>   | Delete task         |
+
+---
+
+## Example Requests
+
+### Signup
+
+```json
 {
   "username": "lydia",
   "password": "mypassword"
 }
-Create Task
+```
+
+### Create Task
+
+```json
 {
   "title": "Finish project",
   "description": "Submit by Friday",
   "priority": "High"
 }
-Running Tests
+```
 
-Inside backend:
+Authenticated requests must include:
 
+```http
+Authorization: Bearer <token>
+```
+
+---
+
+## Running Tests
+
+Inside the backend folder:
+
+```bash
 pytest tests/ -v
+```
 
 Tests cover:
 
-Signup
-Login
-/me
-CRUD routes
-Pagination
-Unauthorized access
-Cross-user protection
-Seed Data
+* Signup
+* Login
+* `/me`
+* CRUD operations
+* Pagination
+* Unauthorized access
+* Cross-user protection
+
+---
+
+## Seed Data
+
+Run:
+
+```bash
 python seed.py
+```
 
-Creates:
+This creates:
 
-3 users
-5 tasks each
+* 3 sample users
+* 5 tasks for each user
 
-Password for seeded users:
+Password for all seeded users:
 
-password123
-Why This Project Matters
+`password123`
+
+---
+
+## Why This Project Matters
 
 This project demonstrates real-world backend engineering skills:
 
-Secure authentication systems
-REST API architecture
-Database relationships
-Frontend/backend integration
-Authorization logic
-Testing
-Professional project organization
+* Secure authentication systems
+* REST API architecture
+* Database relationships
+* Frontend/backend integration
+* Authorization logic
+* Testing
+* Professional project organization
 
-Author
+---
+
+## Author
 
 Lydia Khasoa
 
+---
 
-License
+## License
 
 Educational use and portfolio demonstration.
+
+```
+```
