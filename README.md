@@ -1,6 +1,6 @@
 # Productivity Task API with JWT
 
-A full-stack productivity project built with a Flask backend API and a React frontend client using JWT authentication. Users can register, log in securely, stay authenticated after refresh, and manage personal tasks through protected API endpoints.
+A full-stack productivity project built with a Flask backend API and a React frontend client using JWT authentication. Users can register, log in securely, remain authenticated after refresh, and manage personal tasks through protected API endpoints.
 
 This project demonstrates backend authentication, authorization, RESTful API design, frontend integration, and secure user-owned resource management.
 
@@ -8,9 +8,9 @@ This project demonstrates backend authentication, authorization, RESTful API des
 
 ## Project Structure
 
-- `backend/` – Flask API, models, routes, migrations, tests, and seed data  
-- `client-with-jwt/` – React frontend client  
-- `README.md` – Main project documentation  
+- `backend/` contains the Flask API, database models, routes, migrations, tests, and seed data.  
+- `client-with-jwt/` contains the React frontend client.  
+- `README.md` contains the full project documentation.
 
 ---
 
@@ -21,7 +21,7 @@ This project demonstrates backend authentication, authorization, RESTful API des
 - User signup  
 - User login  
 - JWT token authentication  
-- Persistent login using stored token  
+- Persistent login after refresh  
 - Protected routes  
 
 ### Task Management
@@ -29,18 +29,18 @@ This project demonstrates backend authentication, authorization, RESTful API des
 Each user can only manage their own tasks.
 
 - Create tasks  
-- View tasks  
+- View all tasks  
 - View one task  
 - Update tasks  
 - Delete tasks  
-- Paginated task listing  
+- Paginated task lists  
 
 ### Security
 
 - Passwords hashed with bcrypt  
-- JWT required for task routes  
+- JWT required for protected routes  
 - Users cannot access another user's tasks  
-- Ownership enforced on backend  
+- Ownership enforced server-side  
 
 ---
 
@@ -93,134 +93,216 @@ Only the logged-in user's tasks are returned.
 
 ## Installation
 
-### 1. Clone the Repository
+### Clone the Repository
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
 cd YOUR_REPOSITORY
-2. Backend Setup
+````
+
+### Backend Setup
+
+```bash
 cd backend
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-3. Create Environment Variables
+```
 
-Inside the backend/ folder, create a .env file:
+### Create Environment Variables
 
+Create a `.env` file inside the `backend/` folder:
+
+```env
 SECRET_KEY=your-secret-key
 JWT_SECRET_KEY=your-jwt-secret-key
+```
 
-Generate secure values:
+Generate secure values if needed:
 
+```bash
 python -c "import secrets; print(secrets.token_hex(32))"
-Database Setup
+```
 
-Inside the backend/ folder run:
+---
 
+## Database Setup
+
+Inside the `backend/` folder run:
+
+```bash
 export FLASK_APP=run.py
 flask db init
 flask db migrate -m "initial migration"
 flask db upgrade
 python seed.py
+```
 
-This creates the database and inserts sample data.
+This creates the database tables and inserts sample data.
 
-Running the Backend
+---
+
+## Running the Backend
+
+```bash
 flask run
+```
 
 or
 
+```bash
 python run.py
+```
 
 Backend URL:
 
+```text
 http://localhost:5555
-Running the Frontend
+```
+
+---
+
+## Running the Frontend
 
 Open a new terminal:
 
+```bash
 cd client-with-jwt
 npm install
 npm start
+```
 
 Frontend URL:
 
+```text
 http://localhost:3000
-Connecting Frontend to Backend
+```
 
-If needed, add this to the frontend package.json:
+---
 
+## Connecting Frontend to Backend
+
+If needed, add this line to the frontend `package.json`:
+
+```json
 "proxy": "http://localhost:5555"
-API Endpoints
-Authentication
-Method	Endpoint	Description
-POST	/signup	Register new user
-POST	/login	Login user
-GET	/me	Get current user
-Tasks
-Method	Endpoint	Description
-GET	/tasks?page=1	Get paginated tasks
-GET	/tasks/<id>	Get one task
-POST	/tasks	Create task
-PATCH	/tasks/<id>	Update task
-DELETE	/tasks/<id>	Delete task
-Example Requests
-Signup
+```
+
+---
+
+## API Endpoints
+
+### Authentication Routes
+
+| Method | Endpoint  | Description            |
+| ------ | --------- | ---------------------- |
+| POST   | `/signup` | Register a new user    |
+| POST   | `/login`  | Login user             |
+| GET    | `/me`     | Get authenticated user |
+
+### Task Routes
+
+| Method | Endpoint        | Description         |
+| ------ | --------------- | ------------------- |
+| GET    | `/tasks?page=1` | Get paginated tasks |
+| GET    | `/tasks/<id>`   | Get one task        |
+| POST   | `/tasks`        | Create task         |
+| PATCH  | `/tasks/<id>`   | Update task         |
+| DELETE | `/tasks/<id>`   | Delete task         |
+
+---
+
+## Example Requests
+
+### Signup
+
+```json
 {
   "username": "lydia",
   "password": "mypassword"
 }
-Create Task
+```
+
+### Create Task
+
+```json
 {
   "title": "Finish project",
   "description": "Submit by Friday",
   "priority": "High"
 }
+```
 
 Authenticated requests require:
 
+```http
 Authorization: Bearer <token>
-Running Tests
+```
 
-Inside the backend folder:
+---
 
+## Running Tests
+
+Inside the backend folder run:
+
+```bash
 pytest tests/ -v
+```
 
-Tests include:
+Tests cover:
 
-Signup
-Login
-/me
-CRUD operations
-Pagination
-Unauthorized access
-Cross-user protection
-Seed Data
+* Signup
+* Login
+* `/me` authentication
+* CRUD operations
+* Pagination
+* Unauthorized access
+* Cross-user ownership protection
+
+---
+
+## Seed Data
+
+Run:
+
+```bash
 python seed.py
+```
 
-Creates:
+This creates:
 
-3 users
-5 tasks each
+* 3 sample users
+* 5 tasks for each user
 
 Default password:
 
+```text
 password123
-Why This Project Matters
+```
 
-This project demonstrates:
+---
 
-Secure authentication systems
-REST API architecture
-Database relationships
-Frontend/backend integration
-Authorization logic
-Testing
-Professional project organization
-Author
+## Why This Project Matters
+
+This project demonstrates real-world backend engineering skills:
+
+* Secure authentication systems
+* REST API architecture
+* Database relationships
+* Frontend/backend integration
+* Authorization logic
+* Testing
+* Professional project organization
+
+---
+
+## Author
 
 Lydia Khasoa
 
-License
+---
+
+## License
 
 Educational use and portfolio demonstration.
+
